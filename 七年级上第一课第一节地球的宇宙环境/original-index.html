@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>地球的宇宙环境 - 交互式课件</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #0a0a15 0%, #1a1a2e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+        }
+
+        h1 {
+            font-size: 32px;
+            color: #e6b800;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #b0b0b0;
+        }
+
+        .module {
+            background: rgba(15, 52, 96, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(230, 184, 0, 0.2);
+        }
+
+        .module-title {
+            font-size: 24px;
+            color: #e6b800;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Solar System Module */
+        .solar-system-container {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .solar-system {
+            flex: 1;
+            min-width: 500px;
+            height: 400px;
+            position: relative;
+            background: radial-gradient(ellipse at center, #0a0a15 0%, #000000 100%);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .orbit {
+            position: absolute;
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .planet {
+            position: absolute;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            z-index: 10;
+        }
+
+        .planet:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .planet-label {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            color: #ffffff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        .planet:hover .planet-label {
+            opacity: 1;
+        }
+
+        .sun {
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, #ffeb3b 0%, #ff9800 100%);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            box-shadow: 0 0 30px #ff9800;
+        }
+
+        .controls {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            min-width: 250px;
+        }
+
+        .control-item {
+            margin-bottom: 15px;
+        }
+
+        .control-item label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 24px;
+            background: #333;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: #00c853;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(26px);
+        }
+
+        .info-card {
+            position: fixed;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #e6b800;
+            border-radius: 10px;
+            padding: 20px;
+            z-index: 1000;
+            display: none;
+            max-width: 300px;
+        }
+
+        .info-card.active {
+            display: block;
+        }
+
+        .info-card h3 {
+            color: #e6b800;
+            margin-bottom: 10px;
+        }
+
+        .info-card .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Habitable Zone Module */
+        .habitable-zone-container {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .habitable-zone {
+            flex: 1;
+            min-width: 500px;
+            height: 400px;
+            background: linear-gradient(90deg, 
+                #ff1744 0%, 
+                #ff1744 25%, 
+                #00c853 25%, 
+                #00c853 75%, 
+                #2979ff 75%, 
+                #2979ff 100%);
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sun-habitable {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, #ffeb3b 0%, #ff9800 100%);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 40px #ff9800;
+        }
+
+        .earth-draggable {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle, #2196f3 0%, #1565c0 100%);
+            border-radius: 50%;
+            cursor: move;
+            top: 50%;
+            left: 75%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 15px #2196f3;
+            z-index: 10;
+        }
+
+        .zone-info {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            min-width: 250px;
+        }
+
+        .info-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
+
+        .info-item strong {
+            color: #e6b800;
+        }
+
+        /* Timeline Module */
+        .timeline-container {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .timeline {
+            flex: 1;
+            min-width: 500px;
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #e6b800;
+            transform: translateY(-50%);
+        }
+
+        .timeline-nodes {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            z-index: 2;
+        }
+
+        .timeline-node {
+            width: 20px;
+            height: 20px;
+            background: #e6b800;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+
+        .timeline-node:hover {
+            transform: scale(1.3);
+            box-shadow: 0 0 15px #e6b800;
+        }
+
+        .timeline-node.active {
+            background: #00c853;
+            box-shadow: 0 0 20px #00c853;
+        }
+
+        .timeline-year {
+            position: absolute;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .timeline-content {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            min-width: 350px;
+            max-width: 400px;
+        }
+
+        .timeline-item {
+            display: none;
+        }
+
+        .timeline-item.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .timeline-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .timeline-title {
+            font-size: 18px;
+            color: #e6b800;
+            margin-bottom: 10px;
+        }
+
+        .timeline-description {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .timeline-fact {
+            background: rgba(230, 184, 0, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 3px solid #e6b800;
+            font-size: 13px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .solar-system-container,
+            .habitable-zone-container,
+            .timeline-container {
+                flex-direction: column;
+            }
+            
+            .solar-system,
+            .habitable-zone,
+            .timeline {
+                min-width: 100%;
+            }
+            
+            .controls,
+            .zone-info,
+            .timeline-content {
+                min-width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .module {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .module-title {
+                font-size: 20px;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>地球的宇宙环境</h1>
+            <p class="subtitle">七年级上册地理 · 交互式学习课件</p>
+        </header>
+
+        <!-- Module 1: Solar System -->
+        <section class="module" id="solar-system">
+            <h2 class="module-title">太阳系模型</h2>
+            <div class="solar-system-container">
+                <div class="solar-system" id="solarSystem">
+                    <div class="sun"></div>
+                    <!-- Orbits will be generated by JavaScript -->
+                    <!-- Planets will be generated by JavaScript -->
+                </div>
+                <div class="controls">
+                    <div class="control-item">
+                        <label>轨道显示</label>
+                        <div class="toggle-switch active" id="orbitToggle"></div>
+                    </div>
+                    <div class="control-item">
+                        <label>比例说明</label>
+                        <button id="scaleInfo" style="background: #e6b800; color: #000; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer;">查看说明</button>
+                    </div>
+                    <div id="scaleExplanation" style="display: none; margin-top: 10px; font-size: 12px; line-height: 1.5;">
+                        为便于观察，行星大小和距离比例已调整，非真实比例。
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Module 2: Habitable Zone -->
+        <section class="module" id="habitable-zone">
+            <h2 class="module-title">宜居带演示器</h2>
+            <div class="habitable-zone-container">
+                <div class="habitable-zone" id="habitableZone">
+                    <div class="sun-habitable"></div>
+                    <div class="earth-draggable" id="earthDraggable"></div>
+                </div>
+                <div class="zone-info">
+                    <div class="info-item">
+                        <strong>当前区域:</strong> <span id="currentZone">宜居</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>温度:</strong> <span id="currentTemp">15℃</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>水状态:</strong> <span id="waterState">液态</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>结论:</strong> <span id="conclusion">适合生命</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Module 3: Timeline -->
+        <section class="module" id="timeline">
+            <h2 class="module-title">中国航天时间轴</h2>
+            <div class="timeline-container">
+                <div class="timeline">
+                    <div class="timeline-line"></div>
+                    <div class="timeline-nodes">
+                        <div class="timeline-node active" data-year="1970">
+                            <span class="timeline-year">1970</span>
+                        </div>
+                        <div class="timeline-node" data-year="2003">
+                            <span class="timeline-year">2003</span>
+                        </div>
+                        <div class="timeline-node" data-year="2013">
+                            <span class="timeline-year">2013</span>
+                        </div>
+                        <div class="timeline-node" data-year="2020">
+                            <span class="timeline-year">2020</span>
+                        </div>
+                        <div class="timeline-node" data-year="2022">
+                            <span class="timeline-year">2022</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-content">
+                    <div class="timeline-item active" data-year="1970">
+                        <img src="1970.jpg" alt="东方红一号" class="timeline-image">
+                        <h3 class="timeline-title">东方红一号</h3>
+                        <p class="timeline-description">中国第一颗人造卫星成功发射，中国成为世界上第五个独立研制并发射人造卫星的国家。</p>
+                        <div class="timeline-fact">
+                            <strong>你知道吗？</strong><br>
+                            东方红乐曲通过卫星传回地面，全世界都能听到。
+                        </div>
+                    </div>
+                    <div class="timeline-item" data-year="2003">
+                        <img src="2003.jpg" alt="神舟五号" class="timeline-image">
+                        <h3 class="timeline-title">神舟五号</h3>
+                        <p class="timeline-description">中国首次载人航天飞行成功，杨利伟成为中国第一位进入太空的航天员。</p>
+                        <div class="timeline-fact">
+                            <strong>你知道吗？</strong><br>
+                            飞船绕地球飞行14圈，行程60万公里。
+                        </div>
+                    </div>
+                    <div class="timeline-item" data-year="2013">
+                        <img src="2013.jpg" alt="嫦娥三号" class="timeline-image">
+                        <h3 class="timeline-title">嫦娥三号</h3>
+                        <p class="timeline-description">嫦娥三号探测器成功着陆月球，玉兔号月球车开始月面巡视探测。</p>
+                        <div class="timeline-fact">
+                            <strong>你知道吗？</strong><br>
+                            玉兔号在月球上工作了972天。
+                        </div>
+                    </div>
+                    <div class="timeline-item" data-year="2020">
+                        <img src="2020.jpg" alt="嫦娥五号" class="timeline-image">
+                        <h3 class="timeline-title">嫦娥五号</h3>
+                        <p class="timeline-description">嫦娥五号完成月球采样返回任务，带回约1.7公斤月壤。</p>
+                        <div class="timeline-fact">
+                            <strong>你知道吗？</strong><br>
+                            这是44年来人类再次从月球带回样本。
+                        </div>
+                    </div>
+                    <div class="timeline-item" data-year="2022">
+                        <img src="2022.jpg" alt="天宫空间站" class="timeline-image">
+                        <h3 class="timeline-title">天宫空间站</h3>
+                        <p class="timeline-description">天宫空间站完成在轨建造，中国拥有了自己的"太空之家"。</p>
+                        <div class="timeline-fact">
+                            <strong>你知道吗？</strong><br>
+                            航天员在空间站生活了180天。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Planet Info Card -->
+    <div class="info-card" id="planetInfo">
+        <button class="close-btn" onclick="closePlanetInfo()">&times;</button>
+        <h3 id="planetName"></h3>
+        <div id="planetDetails"></div>
+    </div>
+
+    <script>
+        // Planet data
+        const planets = [
+            { name: '水星', diameter: 4879, distance: 57.9, temp: '-173~427', color: '#8c8c8c', size: 8, orbit: 60 },
+            { name: '金星', diameter: 12104, distance: 108.2, temp: '465', color: '#ffd700', size: 14, orbit: 90 },
+            { name: '地球', diameter: 12742, distance: 149.6, temp: '-88~58', color: '#2196f3', size: 14, orbit: 120 },
+            { name: '火星', diameter: 6779, distance: 227.9, temp: '-87~-5', color: '#ff5722', size: 10, orbit: 150 },
+            { name: '木星', diameter: 139820, distance: 778.6, temp: '-110', color: '#ff9800', size: 28, orbit: 200 },
+            { name: '土星', diameter: 116460, distance: 1433.5, temp: '-140', color: '#fdd835', size: 24, orbit: 250 },
+            { name: '天王星', diameter: 50724, distance: 2872.5, temp: '-195', color: '#4fc3f7', size: 18, orbit: 300 },
+            { name: '海王星', diameter: 49244, distance: 4495.1, temp: '-200', color: '#3f51b5', size: 18, orbit: 350 }
+        ];
+
+        // Initialize Solar System
+        function initSolarSystem() {
+            const solarSystem = document.getElementById('solarSystem');
+            
+            // Create orbits and planets
+            planets.forEach((planet, index) => {
+                // Create orbit
+                const orbit = document.createElement('div');
+                orbit.className = 'orbit';
+                orbit.style.width = planet.orbit * 2 + 'px';
+                orbit.style.height = planet.orbit * 2 + 'px';
+                solarSystem.appendChild(orbit);
+                
+                // Create planet container
+                const planetContainer = document.createElement('div');
+                planetContainer.className = 'planet';
+                planetContainer.style.width = planet.size + 'px';
+                planetContainer.style.height = planet.size + 'px';
+                planetContainer.style.background = `radial-gradient(circle at 30% 30%, ${planet.color}, ${adjustColor(planet.color, -40)})`;
+                planetContainer.style.left = `calc(50% + ${planet.orbit}px - ${planet.size/2}px)`;
+                planetContainer.style.top = `calc(50% - ${planet.size/2}px)`;
+                
+                // Create label
+                const label = document.createElement('div');
+                label.className = 'planet-label';
+                label.textContent = planet.name;
+                planetContainer.appendChild(label);
+                
+                // Add click event
+                planetContainer.addEventListener('click', () => showPlanetInfo(planet));
+                
+                solarSystem.appendChild(planetContainer);
+            });
+        }
+
+        // Adjust color brightness
+        function adjustColor(color, amount) {
+            const num = parseInt(color.replace('#', ''), 16);
+            const r = Math.max(0, Math.min(255, (num >> 16) + amount));
+            const g = Math.max(0, Math.min(255, ((num >> 8) & 0x00FF) + amount));
+            const b = Math.max(0, Math.min(255, (num & 0x0000FF) + amount));
+            return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0');
+        }
+
+        // Show planet info
+        function showPlanetInfo(planet) {
+            const infoCard = document.getElementById('planetInfo');
+            const planetName = document.getElementById('planetName');
+            const planetDetails = document.getElementById('planetDetails');
+            
+            planetName.textContent = planet.name;
+            planetDetails.innerHTML = `
+                <p><strong>直径:</strong> ${planet.diameter.toLocaleString()} km</p>
+                <p><strong>与太阳距离:</strong> ${planet.distance} 百万km</p>
+                <p><strong>表面温度:</strong> ${planet.temp}℃</p>
+            `;
+            
+            infoCard.style.left = '50%';
+            infoCard.style.top = '50%';
+            infoCard.style.transform = 'translate(-50%, -50%)';
+            infoCard.classList.add('active');
+        }
+
+        // Close planet info
+        function closePlanetInfo() {
+            document.getElementById('planetInfo').classList.remove('active');
+        }
+
+        // Orbit toggle
+        document.getElementById('orbitToggle').addEventListener('click', function() {
+            this.classList.toggle('active');
+            const orbits = document.querySelectorAll('.orbit');
+            orbits.forEach(orbit => {
+                orbit.style.display = this.classList.contains('active') ? 'block' : 'none';
+            });
+        });
+
+        // Scale info toggle
+        document.getElementById('scaleInfo').addEventListener('click', function() {
+            const explanation = document.getElementById('scaleExplanation');
+            explanation.style.display = explanation.style.display === 'none' ? 'block' : 'none';
+        });
+
+        // Habitable Zone - Earth dragging
+        let isDragging = false;
+        let currentX;
+        let currentY;
+        let initialX;
+        let initialY;
+        let xOffset = 0;
+        let yOffset = 0;
+
+        const earthDraggable = document.getElementById('earthDraggable');
+        const habitableZone = document.getElementById('habitableZone');
+
+        earthDraggable.addEventListener('mousedown', dragStart);
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', dragEnd);
+
+        // Touch events for mobile
+        earthDraggable.addEventListener('touchstart', dragStart);
+        document.addEventListener('touchmove', drag);
+        document.addEventListener('touchend', dragEnd);
+
+        function dragStart(e) {
+            if (e.type === 'touchstart') {
+                initialX = e.touches[0].clientX - xOffset;
+                initialY = e.touches[0].clientY - yOffset;
+            } else {
+                initialX = e.clientX - xOffset;
+                initialY = e.clientY - yOffset;
+            }
+
+            if (e.target === earthDraggable) {
+                isDragging = true;
+            }
+        }
+
+        function drag(e) {
+            if (isDragging) {
+                e.preventDefault();
+                
+                if (e.type === 'touchmove') {
+                    currentX = e.touches[0].clientX - initialX;
+                    currentY = e.touches[0].clientY - initialY;
+                } else {
+                    currentX = e.clientX - initialX;
+                    currentY = e.clientY - initialY;
+                }
+
+                xOffset = currentX;
+                yOffset = currentY;
+
+                // Constrain to habitable zone
+                const rect = habitableZone.getBoundingClientRect();
+                const earthRect = earthDraggable.getBoundingClientRect();
+                
+                let newX = currentX;
+                let newY = currentY;
+                
+                // Constrain X
+                if (earthRect.left < rect.left) {
+                    newX = rect.left - earthDraggable.offsetLeft;
+                } else if (earthRect.right > rect.right) {
+                    newX = rect.right - earthDraggable.offsetLeft - earthDraggable.offsetWidth;
+                }
+                
+                // Constrain Y
+                if (earthRect.top < rect.top) {
+                    newY = rect.top - earthDraggable.offsetTop;
+                } else if (earthRect.bottom > rect.bottom) {
+                    newY = rect.bottom - earthDraggable.offsetTop - earthDraggable.offsetHeight;
+                }
+
+                earthDraggable.style.transform = `translate(${newX}px, ${newY}px)`;
+                
+                updateZoneInfo();
+            }
+        }
+
+        function dragEnd(e) {
+            initialX = currentX;
+            initialY = currentY;
+            isDragging = false;
+        }
+
+        function updateZoneInfo() {
+            const rect = habitableZone.getBoundingClientRect();
+            const earthRect = earthDraggable.getBoundingClientRect();
+            
+            // Calculate distance from sun (center)
+            const sunX = rect.left + rect.width / 2;
+            const sunY = rect.top + rect.height / 2;
+            const earthX = earthRect.left + earthRect.width / 2;
+            const earthY = earthRect.top + earthRect.height / 2;
+            
+            const distance = Math.sqrt(Math.pow(earthX - sunX, 2) + Math.pow(earthY - sunY, 2));
+            const maxDistance = rect.width / 2;
+            
+            // Calculate temperature (simplified formula)
+            const temp = Math.round(100 - (distance / maxDistance) * 300);
+            
+            // Determine zone
+            let zone, waterState, conclusion;
+            if (temp > 60) {
+                zone = '太热';
+                waterState = '气态';
+                conclusion = '不适合';
+            } else if (temp >= 0) {
+                zone = '宜居';
+                waterState = '液态';
+                conclusion = '适合生命';
+            } else {
+                zone = '太冷';
+                waterState = '冰';
+                conclusion = '不适合';
+            }
+            
+            // Update display
+            document.getElementById('currentZone').textContent = zone;
+            document.getElementById('currentTemp').textContent = temp + '℃';
+            document.getElementById('waterState').textContent = waterState;
+            document.getElementById('conclusion').textContent = conclusion;
+        }
+
+        // Timeline functionality
+        const timelineNodes = document.querySelectorAll('.timeline-node');
+        const timelineItems = document.querySelectorAll('.timeline-item');
+
+        timelineNodes.forEach(node => {
+            node.addEventListener('click', function() {
+                const year = this.dataset.year;
+                
+                // Update active node
+                timelineNodes.forEach(n => n.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Update active content
+                timelineItems.forEach(item => {
+                    if (item.dataset.year === year) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initSolarSystem();
+            updateZoneInfo();
+        });
+
+        // Close info card when clicking outside
+        document.addEventListener('click', function(e) {
+            const infoCard = document.getElementById('planetInfo');
+            if (!infoCard.contains(e.target) && !e.target.classList.contains('planet')) {
+                closePlanetInfo();
+            }
+        });
+    </script>
+</body>
+</html>
