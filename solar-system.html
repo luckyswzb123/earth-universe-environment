@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>太阳系模型 - 地球的宇宙环境</title>
+    
+    <!-- CSS文件 -->
+    <link rel="stylesheet" href="css/solar-system.css">
+    
+    <!-- 响应式viewport设置 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- 移动端优化 -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body>
+    <!-- 头部导航 -->
+    <header>
+        <a href="index.html" class="back-button">← 返回主页</a>
+        <h1>太阳系模型</h1>
+    </header>
+
+    <!-- 3D画布容器 -->
+    <div id="canvas-container"></div>
+
+    <!-- 加载提示 -->
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        正在加载3D太阳系...
+    </div>
+
+    <!-- 控制面板 -->
+    <div class="controls">
+        <button class="pause-btn" id="pauseBtn">
+            ⏸️ 暂停运行
+        </button>
+        <div class="control-item">
+            <label>轨道显示</label>
+            <div class="toggle-switch active" id="orbitToggle"></div>
+        </div>
+        <div class="control-item">
+            <label>运行速度</label>
+            <input type="range" class="speed-control" id="speedControl" min="0.1" max="3" step="0.1" value="1">
+        </div>
+        <div class="control-item">
+            <label>视角缩放</label>
+            <input type="range" class="speed-control" id="zoomControl" min="50" max="200" step="10" value="100">
+        </div>
+    </div>
+
+    <!-- 行星信息卡片 -->
+    <div class="info-card" id="planetInfo">
+        <button class="close-btn" onclick="closePlanetInfo()">&times;</button>
+        <h3 id="planetName"></h3>
+        <div id="planetDetails"></div>
+    </div>
+
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- JavaScript文件 -->
+    <script src="js/solar-system.js"></script>
+</body>
+</html>

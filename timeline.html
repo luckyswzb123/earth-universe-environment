@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中国航天时间轴 - 地球的宇宙环境</title>
+    
+    <!-- CSS文件 -->
+    <link rel="stylesheet" href="css/timeline.css">
+    
+    <!-- 响应式viewport设置 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- 移动端优化 -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body>
+    <!-- 星空背景 -->
+    <div class="stars" id="stars"></div>
+
+    <!-- 头部导航 -->
+    <header>
+        <a href="index.html" class="back-button">← 返回主页</a>
+        <h1>中国航天时间轴</h1>
+    </header>
+
+    <!-- 主容器 -->
+    <div class="main-container">
+        <!-- 时间轴部分 -->
+        <section class="timeline-section">
+            <h2 class="timeline-title">探索中国航天的辉煌历程</h2>
+            
+            <div class="timeline-container">
+                <div class="timeline-line"></div>
+                <div class="timeline-nodes">
+                    <div class="timeline-node active" data-year="1970">
+                        <span class="timeline-year">1970</span>
+                    </div>
+                    <div class="timeline-node" data-year="2003">
+                        <span class="timeline-year">2003</span>
+                    </div>
+                    <div class="timeline-node" data-year="2013">
+                        <span class="timeline-year">2013</span>
+                    </div>
+                    <div class="timeline-node" data-year="2020">
+                        <span class="timeline-year">2020</span>
+                    </div>
+                    <div class="timeline-node" data-year="2022">
+                        <span class="timeline-year">2022</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 内容展示区 -->
+        <section class="content-section">
+            <!-- 事件展示 -->
+            <div class="content-display">
+                <div class="autoplay-indicator" id="autoplayIndicator">自动播放中</div>
+                
+                <!-- 1970年事件 -->
+                <div class="event-item active" data-year="1970">
+                    <img src="1970.jpg" alt="东方红一号" class="event-image">
+                    <h3 class="event-title">东方红一号</h3>
+                    <p class="event-description">
+                        1970年4月24日，中国第一颗人造地球卫星"东方红一号"成功发射，中国成为世界上第五个独立研制并发射人造卫星的国家。这标志着中国正式进入太空时代，开启了中华民族的航天梦想。
+                    </p>
+                    <div class="event-fact">
+                        <h4>你知道吗？</h4>
+                        <p>东方红卫星成功发射后，通过卫星传回了《东方红》乐曲，全世界都能通过收音机听到来自太空的中国声音。这颗卫星在太空中运行了28天，完成了历史使命。</p>
+                    </div>
+                </div>
+
+                <!-- 2003年事件 -->
+                <div class="event-item" data-year="2003">
+                    <img src="2003.jpg" alt="神舟五号" class="event-image">
+                    <h3 class="event-title">神舟五号</h3>
+                    <p class="event-description">
+                        2003年10月15日，神舟五号载人飞船成功发射，航天员杨利伟成为首位进入太空的中国人。中国成为世界上第三个独立掌握载人航天技术的国家，实现了千年飞天梦想。
+                    </p>
+                    <div class="event-fact">
+                        <h4>你知道吗？</h4>
+                        <p>杨利伟在太空飞行了21小时23分，绕地球飞行14圈，行程约60万公里。他在太空中展示了中国国旗和联合国旗，并吃上了太空食品，包括八宝饭等中式食品。</p>
+                    </div>
+                </div>
+
+                <!-- 2013年事件 -->
+                <div class="event-item" data-year="2013">
+                    <img src="2013.jpg" alt="嫦娥三号" class="event-image">
+                    <h3 class="event-title">嫦娥三号</h3>
+                    <p class="event-description">
+                        2013年12月14日，嫦娥三号探测器成功在月球表面软着陆，中国成为世界上第三个实现月球软着陆的国家。"玉兔号"月球车开始月面巡视探测，创造了月球探测的新纪录。
+                    </p>
+                    <div class="event-fact">
+                        <h4>你知道吗？</h4>
+                        <p>"玉兔号"月球车设计寿命为3个月，但实际在月球上工作了972天，远远超出预期。它传回了大量珍贵的月球表面数据和图像，为人类认识月球做出了重要贡献。</p>
+                    </div>
+                </div>
+
+                <!-- 2020年事件 -->
+                <div class="event-item" data-year="2020">
+                    <img src="2020.jpg" alt="嫦娥五号" class="event-image">
+                    <h3 class="event-title">嫦娥五号</h3>
+                    <p class="event-description">
+                        2020年11月24日，嫦娥五号探测器成功发射，执行中国首次月球采样返回任务。12月17日，返回器携带约1.7公斤月球样品安全着陆，中国成为世界上第三个实现月球采样返回的国家。
+                    </p>
+                    <div class="event-fact">
+                        <h4>你知道吗？</h4>
+                        <p>这是44年来人类再次从月球带回样本，也是中国航天史上的里程碑。嫦娥五号任务经历了11个阶段，23天的太空之旅，创造了多项中国航天新纪录。</p>
+                    </div>
+                </div>
+
+                <!-- 2022年事件 -->
+                <div class="event-item" data-year="2022">
+                    <img src="2022.jpg" alt="天宫空间站" class="event-image">
+                    <h3 class="event-title">天宫空间站</h3>
+                    <p class="event-description">
+                        2022年，中国天宫空间站完成在轨建造，正式进入应用与发展阶段。中国拥有了自己的长期在轨运行的"太空之家"，成为世界上第三个独立建造空间站的国家。
+                    </p>
+                    <div class="event-fact">
+                        <h4>你知道吗？</h4>
+                        <p>天宫空间站设计寿命为10年，可容纳3名航天员长期驻留。航天员在空间站进行了大量科学实验，包括太空育种、材料科学、生命科学等领域的研究。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 统计信息 -->
+            <div class="stats-section">
+                <h3 class="stats-title">中国航天成就</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number">52</div>
+                        <div class="stat-label">年航天历史</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">400+</div>
+                        <div class="stat-label">卫星发射</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">12</div>
+                        <div class="stat-label">航天员飞天</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">3</div>
+                        <div class="stat-label">月球探测</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">1</div>
+                        <div class="stat-label">火星探测</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">2022</div>
+                        <div class="stat-label">空间站建成</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 控制按钮 -->
+        <div class="controls">
+            <button class="control-btn" onclick="previousEvent()">上一个</button>
+            <button class="control-btn" onclick="toggleAutoplay()">自动播放</button>
+            <button class="control-btn" onclick="nextEvent()">下一个</button>
+        </div>
+    </div>
+
+    <!-- JavaScript文件 -->
+    <script src="js/timeline.js"></script>
+</body>
+</html>

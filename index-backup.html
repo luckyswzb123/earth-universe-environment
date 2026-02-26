@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>地球的宇宙环境 - 交互式课件</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #0a0a15 0%, #1a1a2e 50%, #0f3460 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 星空背景动画 */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 40px 0;
+            animation: fadeInDown 1s ease;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-size: 48px;
+            background: linear-gradient(135deg, #e6b800 0%, #ffd700 50%, #e6b800 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            text-shadow: 0 0 30px rgba(230, 184, 0, 0.3);
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 20px;
+            color: #b0b0b0;
+            letter-spacing: 2px;
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        .module-card {
+            background: rgba(15, 52, 96, 0.4);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            border: 2px solid rgba(230, 184, 0, 0.2);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 1s ease backwards;
+        }
+
+        .module-card:nth-child(1) { animation-delay: 0.2s; }
+        .module-card:nth-child(2) { animation-delay: 0.4s; }
+        .module-card:nth-child(3) { animation-delay: 0.6s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .module-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(230, 184, 0, 0.1) 0%, transparent 70%);
+            transform: rotate(45deg);
+            transition: all 0.6s ease;
+            opacity: 0;
+        }
+
+        .module-card:hover::before {
+            opacity: 1;
+            transform: rotate(45deg) translate(20%, 20%);
+        }
+
+        .module-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(230, 184, 0, 0.6);
+            box-shadow: 0 20px 40px rgba(230, 184, 0, 0.2);
+        }
+
+        .module-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            display: block;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        }
+
+        .module-title {
+            font-size: 28px;
+            color: #e6b800;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .module-description {
+            font-size: 16px;
+            color: #d0d0d0;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .module-button {
+            background: linear-gradient(135deg, #e6b800 0%, #ffd700 100%);
+            color: #0a0a15;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .module-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .module-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .module-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(230, 184, 0, 0.4);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 80px;
+            padding: 30px 0;
+            color: #808080;
+            font-size: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 36px;
+            }
+            
+            .modules-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .module-card {
+                padding: 30px 20px;
+            }
+            
+            .module-icon {
+                font-size: 48px;
+            }
+            
+            .module-title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 星空背景 -->
+    <div class="stars" id="stars"></div>
+
+    <div class="container">
+        <header>
+            <h1>地球的宇宙环境</h1>
+            <p class="subtitle">七年级上册地理 · 交互式学习课件</p>
+        </header>
+
+        <main>
+            <div class="modules-grid">
+                <!-- 太阳系模型 -->
+                <div class="module-card">
+                    <span class="module-icon">🌌</span>
+                    <h2 class="module-title">太阳系模型</h2>
+                    <p class="module-description">
+                        探索太阳系八大行星的运行轨迹，观察3D立体行星围绕太阳旋转的壮观景象
+                    </p>
+                    <button class="module-button" onclick="openModule('solar-system.html')">
+                        开始探索
+                    </button>
+                </div>
+
+                <!-- 宜居带演示器 -->
+                <div class="module-card">
+                    <span class="module-icon">🌍</span>
+                    <h2 class="module-title">宜居带演示器</h2>
+                    <p class="module-description">
+                        拖拽地球到不同位置，体验温度变化，理解为什么地球是生命的摇篮
+                    </p>
+                    <button class="module-button" onclick="openModule('habitable-zone.html')">
+                        开始实验
+                    </button>
+                </div>
+
+                <!-- 中国航天时间轴 -->
+                <div class="module-card">
+                    <span class="module-icon">🚀</span>
+                    <h2 class="module-title">中国航天时间轴</h2>
+                    <p class="module-description">
+                        回顾中国航天事业的辉煌历程，见证从东方红到天宫的伟大成就
+                    </p>
+                    <button class="module-button" onclick="openModule('timeline.html')">
+                        开始回顾
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>© 2026 地理交互式课件 | 为七年级学生量身打造</p>
+        </footer>
+    </div>
+
+    <script>
+        // 生成星空背景
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const numberOfStars = 150;
+            
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                // 随机位置
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                
+                // 随机大小
+                const size = Math.random() * 3 + 1;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                
+                // 随机动画延迟
+                star.style.animationDelay = Math.random() * 3 + 's';
+                
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // 打开模块页面
+        function openModule(page) {
+            window.open(page, '_blank');
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            createStars();
+            
+            // 添加页面加载动画
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                document.body.style.transition = 'opacity 1s ease';
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+
+        // 添加键盘导航
+        document.addEventListener('keydown', function(e) {
+            const buttons = document.querySelectorAll('.module-button');
+            
+            // 数字键1-3快速导航
+            if (e.key >= '1' && e.key <= '3') {
+                const index = parseInt(e.key) - 1;
+                if (buttons[index]) {
+                    buttons[index].click();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
