@@ -16,8 +16,11 @@ class TimelineV2 {
 
     // 检测移动设备
     detectMobile() {
-        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-               (window.innerWidth <= 768 && this.isTouch);
+        const userAgent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const touchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        const smallScreen = window.innerWidth <= 768;
+        
+        return userAgent || (touchDevice && smallScreen);
     }
 
     // 初始化
@@ -26,6 +29,21 @@ class TimelineV2 {
         this.setupEventListeners();
         this.switchEvent('1970');
         this.setupResponsiveHandlers();
+        this.preventDoubleClickZoom();
+    }
+
+    // 防止双击缩放
+    preventDoubleClickZoom() {
+        if (!this.isTouch) return;
+        
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', (e) => {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                e.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
     }
 
     // 生成星空背景
@@ -58,9 +76,28 @@ class TimelineV2 {
         // 时间轴节点点击事件
         const nodes = document.querySelectorAll('.timeline-node');
         nodes.forEach(node => {
+            // 为所有设备添加点击事件，移动设备会自动处理
+            node.addEventListener('click', (e) => {
+                e.preventDefault();
+                const year = node.dataset.year;
+                this.switchEvent(year);
+                
+                // 停止自动播放
+                if (this.isAutoplay) {
+                    this.toggleAutoplay();
+                }
+            });
+            
+            // 移动设备专用触摸事件
             if (this.isTouch) {
+                node.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    node.style.transform = 'scale(1.1)';
+                });
+                
                 node.addEventListener('touchend', (e) => {
                     e.preventDefault();
+                    node.style.transform = 'scale(1)';
                     const year = node.dataset.year;
                     this.switchEvent(year);
                     
@@ -69,15 +106,10 @@ class TimelineV2 {
                         this.toggleAutoplay();
                     }
                 });
-            } else {
-                node.addEventListener('click', () => {
-                    const year = node.dataset.year;
-                    this.switchEvent(year);
-                    
-                    // 停止自动播放
-                    if (this.isAutoplay) {
-                        this.toggleAutoplay();
-                    }
+                
+                // 防止触摸滑动时误触
+                node.addEventListener('touchmove', (e) => {
+                    e.preventDefault();
                 });
             }
         });
@@ -117,32 +149,84 @@ class TimelineV2 {
     setupImageErrorHandling() {
         const images = document.querySelectorAll('.event-image');
         images.forEach(img => {
+            // 强制设置图片可见
+            img.style.display = 'block';
+            img.style.visibility = 'visible';
+            img.style.opacity = '1';
+            
+            // 添加加载开始的处理
+            img.addEventListener('load', () => {
+                console.log(`图片加载成功: ${img.src}`);
+                img.style.display = 'block';
+                img.style.visibility = 'visible';
+                img.style.opacity = '1';
+            });
+            
+            // 添加加载错误的处理
             img.addEventListener('error', () => {
+                console.log(`图片加载失败: ${img.src}`);
                 // 如果图片加载失败，使用占位符
                 img.src = this.generatePlaceholderImage(img.alt);
+                img.style.display = 'block';
+                img.style.visibility = 'visible';
+                img.style.opacity = '1';
             });
+            
+            // 检查图片当前状态
+            if (img.complete && img.naturalHeight !== 0) {
+                console.log(`图片已加载: ${img.src}`);
+                img.style.display = 'block';
+                img.style.visibility = 'visible';
+                img.style.opacity = '1';
+            } else if (img.complete && img.naturalHeight === 0) {
+                console.log(`图片加载失败，使用占位符: ${img.src}`);
+                img.src = this.generatePlaceholderImage(img.alt);
+                img.style.display = 'block';
+                img.style.visibility = 'visible';
+                img.style.opacity = '1';
+            } else {
+                console.log(`图片开始加载: ${img.src}`);
+            }
         });
     }
 
     // 生成占位符图片
     generatePlaceholderImage(text) {
+        // 根据设备类型调整尺寸
+        const width = this.isMobile ? 300 : 400;
+        const height = this.isMobile ? 150 : 200;
+        const fontSize = this.isMobile ? 14 : 16;
+        
         // 创建一个简单的SVG占位符
         const svg = `
-            <svg width="400" height="200" xmlns="http://www.w3.org/2000/svg">
+            <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
                 <rect width="100%" height="100%" fill="#1a1a2e"/>
-                <text x="50%" y="50%" font-family="Arial" font-size="16" fill="#e6b800" text-anchor="middle" dy=".3em">
+                <text x="50%" y="50%" font-family="Arial, sans-serif" font-size="${fontSize}" fill="#e6b800" text-anchor="middle" dy=".3em">
                     ${text}
                 </text>
             </svg>
         `;
-        return 'data:image/svg+xml;base64,' + btoa(svg);
+        return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
     }
 
     // 设置响应式处理器
     setupResponsiveHandlers() {
         window.addEventListener('resize', () => {
+            const wasMobile = this.isMobile;
             this.isMobile = window.innerWidth <= 768;
-            this.adjustForDevice();
+            
+            // 如果设备类型发生变化，重新调整
+            if (wasMobile !== this.isMobile) {
+                this.adjustForDevice();
+            }
+        });
+
+        // 屏幕方向变化时重新调整
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => {
+                this.isMobile = window.innerWidth <= 768;
+                this.adjustForDevice();
+            }, 100);
         });
 
         this.adjustForDevice();
@@ -184,6 +268,28 @@ class TimelineV2 {
             if (item.dataset.year === year) {
                 item.style.display = 'block';
                 item.style.animation = 'fadeIn 0.5s ease';
+                
+                // 重新处理当前显示项的图片
+                const currentImages = item.querySelectorAll('.event-image');
+                currentImages.forEach(img => {
+                    // 强制设置图片可见
+                    img.style.display = 'block';
+                    img.style.visibility = 'visible';
+                    img.style.opacity = '1';
+                    
+                    console.log(`切换事件，处理图片: ${img.src}`);
+                    
+                    // 如果图片已经加载完成，直接显示
+                    if (img.complete && img.naturalHeight !== 0) {
+                        console.log(`图片已加载，直接显示: ${img.src}`);
+                    } else if (img.complete && img.naturalHeight === 0) {
+                        // 图片加载失败，使用占位符
+                        console.log(`图片加载失败，使用占位符: ${img.src}`);
+                        img.src = this.generatePlaceholderImage(img.alt);
+                    } else {
+                        console.log(`图片未加载，等待加载: ${img.src}`);
+                    }
+                });
             }
         });
 
